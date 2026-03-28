@@ -4,6 +4,7 @@ import com.estebanruano.kinalapp.entity.Producto;
 
 import java.util.List;
 import java.util.Optional;
+//.
 //Esta es la interfaz
 public interface IProductoService {
 
