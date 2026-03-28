@@ -4,7 +4,7 @@ import com.estebanruano.kinalapp.entity.Cliente;
 
 import java.util.List;
 import java.util.Optional;
-
+//.
 public interface IClienteService {
     //Interfaz: Es un contrato que dice QUÉ métodos debe tener
     //cualquier servicio de Clientes, No tiene
