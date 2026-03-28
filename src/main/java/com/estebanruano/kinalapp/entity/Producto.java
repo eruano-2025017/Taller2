@@ -4,7 +4,7 @@ package com.estebanruano.kinalapp.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-
+//.
 //Esta es la entidad producto
 @Entity
 @Table(name = "productos")
