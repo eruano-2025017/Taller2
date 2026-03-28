@@ -5,7 +5,7 @@ import com.estebanruano.kinalapp.entity.Usuario;
 
 import java.util.List;
 import java.util.Optional;
-
+//.
 //Esta es la intefaz
 
 public interface IUsuarioService {

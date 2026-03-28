@@ -2,7 +2,7 @@ package com.estebanruano.kinalapp.entity;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
-
+//.
 @Entity
 @Table(name = "usuarios")
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
