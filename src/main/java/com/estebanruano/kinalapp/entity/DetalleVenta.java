@@ -3,7 +3,7 @@ package com.estebanruano.kinalapp.entity;
 import jakarta.persistence.*;
 
 import java.math.BigDecimal;
-
+//.s
 @Entity
 @Table(name = "detalleVenta")
 public class DetalleVenta {
