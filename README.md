@@ -1,89 +1,82 @@
-#KinalApp
+## 1. Visión del Proyecto
+**KinalApp** Lo que realizamos fue una API REST construida con tecnologías modernas del ecosistema Java. Su función principal es administrar el ciclo de ventas de un negocio, facilitando la ejecución de operaciones CRUD (Crear, Leer, Actualizar y Eliminar) sobre entidades fundamentales como clientes, productos, usuarios y las transacciones de venta.
 
-Documentación del Proyecto
-Lo que realizamos fue una API REST construida con tecnologías modernas del ecosistema Java. Su función principal es administrar el ciclo de ventas de un negocio, facilitando la ejecución de operaciones CRUD (Crear, Leer, Actualizar y Eliminar) sobre entidades fundamentales como clientes, productos, usuarios y las transacciones de venta.
+La aplicación destaca por su **integridad referencial**, asegurando que cada venta esté vinculada a un cliente existente y sea procesada por un usuario autorizado en el sistema.
 
-Análisis de los Componentes
-Stack Tecnológico: Emplea las versiones más recientes y estables del mercado. Java 21 proporciona las últimas mejoras de rendimiento, mientras que Spring Boot 4 (que en el contexto actual de 2026 es el estándar) simplifica la configuración automática y el despliegue rápido.
-Arquitectura de Datos: Se respalda en MySQL para el almacenamiento persistente y Maven para gestionar todas las librerías necesarias.
-Estructura de Endpoints: La aplicación sigue una lógica de recursos muy definida:
-Gestión de Inventario: Control de productos y supervisión de stock.
-Gestión de Ventas: Registro detallado de transacciones (Venta y DetalleVenta), lo cual indica que puede manejar múltiples productos por cada factura.
-Seguridad/Control: Gestión de usuarios y estados de actividad (filtros para visualizar solo registros "activos").
-Flujo de Trabajo (Instalación)
-El proceso descrito es el estándar para un desarrollador:
-Preparación del entorno: Verificar que el motor de base de datos y el kit de desarrollo (JDK) estén listos.
-Sincronización: Clonar el código desde el repositorio de GitHub.
-Configuración: Es fundamental el paso de revisar el archivo application.properties, ya que ahí se define la conexión a la base de datos y el puerto de red (en este caso, el 8081).
-Pruebas: Se recomienda el uso de Postman o el navegador para interactuar con los datos a través de las URLs (por ejemplo, para visualizar la lista de clientes).
-Una pequeña observación técnica
-En la sección de Endpoints, se menciona que se utiliza /{dpi} para buscar, eliminar y actualizar.
-Dato curioso: Aunque se emplea la etiqueta {dpi} (que es el identificador único en Guatemala), en el desarrollo de software se suele llamar genéricamente {id}. Es interesante que esté personalizado para el contexto local.
-Diferenciación de Métodos: Para que esos 3 endpoints funcionen en la misma URL (/{dpi}), Spring Boot utiliza diferentes métodos HTTP: GET para buscar, DELETE para eliminar y PUT/PATCH para actualizar.
+---
 
-Tecnologias utilizadas
-Java 21
-Spring Boot 4.0.2
-Maven (Gestor de dependencias)
-MySQL (Sistema gestor de Base de Datos)
+## 2. Especificaciones Técnicas
+* **Lenguaje**: Java 21 (LTS).
+* **Framework**: Spring Boot 4.0.2.
+* **Persistencia**: Spring Data JPA con motor **MySQL**.
+* **Gestión de Dependencias**: Maven (POM XML).
+* **Estandarización de Datos**: Implementación de tipos **Long** en todos los identificadores (ID).
 
-Requisitos Previos
-Antes de ejecutar la aplicación debe tener instalado:
-JDK 17 o superior
-Maven instalado
-Una instancia activa en MySQL
-Instalaciones opcionales
+---
 
-Postman
+## 3. Guía de Configuración y Despliegue
 
-Instalación y Ejecución
+### Requisitos de Entorno
+* **Java Development Kit (JDK) 21**.
+* **Servidor MySQL** (Puerto 3306).
+* **Maven 3.9+**.
 
-Clonar repositorio https://github.com/eruano-2025017/Taller2.git
-Abrir Intellij IDEA.
-Abrir la carpeta que clono.
-Abrir MySQL en su ordenador.
-Ingresar a la instancia activa en MySQL.
-Regresar a Intellij IDEA.
-Dirigirse a la carpeta "src\main\java\com\estebanruano".
-Dirirgirse a KinalAppApplication y ejecutar la aplicación.
-Abrir la carpeta "resources/application.properties".
-Verificar que puerto esta utilizando la aplicación.
-Abrir el navegador y poner el puerto http://localhost:8083/clientes.
-
-Endpoints
+### Pasos de Instalación
+* ** 1. Clonar repositorio: `https://github.com/eruano-2025017/Taller2.git`
+* ** 2. Abrir Intellij IDEA.
+* **3. Abrir la carpeta que clonó.
+* ** 4. Abrir MySQL en su ordenador.
+* ** 5. Ingresar a la instancia activa en MySQL.
+* ** 6. Regresar a Intellij IDEA.
+* ** 7. Dirigirse a la carpeta `src\main\java\com\estebanruano`.
+* ** 8. Dirigirse a `KinalAppApplication` y ejecutar la aplicación.
+* ** 9. Abrir la carpeta `resources/application.properties`.
+* ** 10. Verificar qué puerto está utilizando la aplicación.
+* ** 11. Abrir el navegador y poner el puerto: `http://localhost:8083/clientes`.
 
 
-Cliente:
-"/clientes": Esto nos lista los clientes y agrega el cliente.
-"/estado": Esto lista los clientes que están activos.
-"/{dpi}": Esto busca el cliente mediante él id.
-"/{dpi}": Esto elimina el cliente mediante él id.
-"/{dpi}": Esto actualiza el cliente mediante él id.
 
-Usuario:
-"/usuarios": Esto nos lista los usuarios y agrega el usuario.
-"/estado": Esto lista los usuarios que están activos.
-"/{codigoUsu}": Esto busca el usuario mediante él id.
-"/{codigoUsu}": Esto elimina el usuario mediante él id.
-"/{codigoUsu}": Esto actualiza el usuario mediante él id.
+---
 
-Producto:
-"/productos": Esto nos lista los productos y agrega el producto.
-"/estado": Esto lista los productos que están activos.
-"/{codigoPro}": Esto busca el producto mediante él id.
-"/{codigoPro}": Esto elimina el producto mediante él id.
-"/{codigoPro}": Esto actualiza el producto mediante él id.
-"/stock": Esto lista el nombre del producto y la cantidad que hay en stock.
+## 4. Diccionario de Endpoints (API Reference)
 
-Venta:
-"/ventas": Esto nos lista las ventas y agrega la venta.
-"/estado": Esto lista las ventas que están activos.
-"/{codigoVen}": Esto busca la venta mediante él id.
-"/{codigoVen}": Esto elimina la venta mediante él id.
-"/{codigoVen}": Esto actualiza la venta mediante él id.
+El sistema utiliza rutas normalizadas para cada recurso, diferenciando las operaciones mediante verbos HTTP (GET, POST, PUT, DELETE).
 
-DetalleVenta:
-"/detalleVentas": Esto nos lista los detalles de venta y agrega el detalle venta.
-"/{codigoDeVe}": Esto busca los detalles de venta mediante él id.
-"/{codigoDeVe}": Esto elimina los detalles de venta mediante él id.
-"/{codigoDeVe}": Esto actualiza los detalles de venta mediante él id.
+###  Módulo de Clientes (`/clientes`)
+* `GET /clientes`: Lista todos los clientes registrados.
+* `POST /clientes`: Registra un nuevo cliente.
+* `GET /clientes/estado`: Filtra clientes con estado activo.
+* `GET /clientes/{id}`: Busca un cliente por su ID (**Long**).
+* `PUT /clientes/{id}`: Actualiza los datos de un cliente.
+* `DELETE /clientes/{id}`: Baja lógica o física de un cliente.
+
+###  Módulo de Usuarios (`/usuarios`)
+* `GET /usuarios`: Lista todos los usuarios registrados.
+* `POST /usuarios`: Registra un nuevo usuarios.
+* `GET /usuarios/estado`: Filtra usuarios con estado activo.
+* `GET /usuarios/{codigoUsu}`: Busca un usuarios por su ID (**Long**).
+* `PUT /usuarios/{codigoUsu}`: Actualiza los datos de un usuarios.
+* `DELETE /usuarios/{codigoUsu}`: Baja lógica o física de un usuarios.
+
+###  Módulo de Productos (`/productos`)
+* `GET /productos`: Lista todos los productos registrados.
+* `POST /productos`: Registra un nuevo productos.
+* `GET /productos/estado`: Filtra productos con estado activo.
+* `GET /productos/{codigoPro}`: Busca un productos por su ID (**Long**).
+* `PUT /productos/{codigoPro}`: Actualiza los datos de un productos.
+* `DELETE /productos/{codigoPro}`: Baja lógica o física de un productos.
+
+###  Módulo de Ventas (`/ventas`)
+* `GET /ventas`: Lista todos los ventas registrados.
+* `POST /ventas`: Registra un nuevo ventas.
+* `GET /ventas/estado`: Filtra ventas con estado activo.
+* `GET /ventas/{codigoVen}`: Busca un ventas por su ID (**Long**).
+* `PUT /ventas/{codigoVen}`: Actualiza los datos de un ventas.
+* `DELETE /ventas/{codigoVen}`: Baja lógica o física de un ventas.
+
+###  Módulo de Detalles (`/detalleVentas`)
+* `GET /detalleVentas`: Lista todos los clientes registrados.
+* `POST /detalleVentas`: Registra un nuevo cliente.
+* `GET /detalleVentas/{codigoDeVe}`: Busca un detalleVentas por su ID (**Long**).
+* `PUT /detalleVentas/{codigoDeVe}`: Actualiza los datos de un cliente.
+* `DELETE /detalleVentas/{codigoDeVe}`: Baja lógica o física de un cliente.
