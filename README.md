@@ -14,8 +14,6 @@ La aplicación destaca por su **integridad referencial**, asegurando que cada ve
 
 ---
 
-## 3. Guía de Configuración y Despliegue
-
 ### Requisitos de Entorno
 * **Java Development Kit (JDK) 21**.
 * **Servidor MySQL** (Puerto 3306).
@@ -32,12 +30,10 @@ La aplicación destaca por su **integridad referencial**, asegurando que cada ve
 * ** 8. Dirigirse a `KinalAppApplication` y ejecutar la aplicación.
 * ** 9. Abrir la carpeta `resources/application.properties`.
 * ** 10. Verificar qué puerto está utilizando la aplicación.
-* ** 11. Abrir el navegador y poner el puerto: `http://localhost:8083/clientes`.
-
+* ** 11. Abrir el navegador y poner el puerto: `http://localhost:8083/vista/` (Frontend) o `http://localhost:8083/clientes` (API).
 
 
 ---
-
 ## 4. Diccionario de Endpoints (API Reference)
 
 El sistema utiliza rutas normalizadas para cada recurso, diferenciando las operaciones mediante verbos HTTP (GET, POST, PUT, DELETE).
@@ -72,11 +68,58 @@ El sistema utiliza rutas normalizadas para cada recurso, diferenciando las opera
 * `GET /ventas/estado`: Filtra ventas con estado activo.
 * `GET /ventas/{codigoVen}`: Busca un ventas por su ID (**Long**).
 * `PUT /ventas/{codigoVen}`: Actualiza los datos de un ventas.
-* `DELETE /ventas/{codigoVen}`: Baja lógica o física de un ventas.
 
 ###  Módulo de Detalles (`/detalleVentas`)
 * `GET /detalleVentas`: Lista todos los clientes registrados.
 * `POST /detalleVentas`: Registra un nuevo cliente.
 * `GET /detalleVentas/{codigoDeVe}`: Busca un detalleVentas por su ID (**Long**).
 * `PUT /detalleVentas/{codigoDeVe}`: Actualiza los datos de un cliente.
-* `DELETE /detalleVentas/{codigoDeVe}`: Baja lógica o física de un cliente.
+
+
+## 5. Frontend - Vistas de Usuario (Thymeleaf)
+
+El sistema cuenta con una interfaz gráfica moderna desarrollada con **Thymeleaf**, **Bootstrap 5** y **CSS personalizado**. Todas las vistas están accesibles bajo el prefijo `/vista/`.
+
+### 5.1 Rutas del Frontend
+
+| Módulo | Vista | Ruta |
+|--------|-------|------|
+| **Dashboard** | Página principal | `GET /vista/` |
+| **Clientes** | Lista de clientes | `GET /vista/clientes` |
+| | Formulario nuevo cliente | `GET /vista/clientes/nuevo` |
+| | Editar cliente | `GET /vista/clientes/editar/{dpi}` |
+| | Ver cliente | `GET /vista/clientes/ver/{dpi}` |
+| | Guardar cliente | `POST /vista/clientes/guardar` |
+| | Eliminar cliente | `GET /vista/clientes/eliminar/{dpi}` |
+| **Productos** | Lista de productos | `GET /vista/productos` |
+| | Formulario nuevo producto | `GET /vista/productos/nuevo` |
+| | Editar producto | `GET /vista/productos/editar/{codigo}` |
+| | Ver producto | `GET /vista/productos/ver/{codigo}` |
+| | Guardar producto | `POST /vista/productos/guardar` |
+| | Eliminar producto | `GET /vista/productos/eliminar/{codigo}` |
+| **Usuarios** | Lista de usuarios | `GET /vista/usuarios` |
+| | Formulario nuevo usuario | `GET /vista/usuarios/nuevo` |
+| | Editar usuario | `GET /vista/usuarios/editar/{codigo}` |
+| | Ver usuario | `GET /vista/usuarios/ver/{codigo}` |
+| | Guardar usuario | `POST /vista/usuarios/guardar` |
+| | Eliminar usuario | `GET /vista/usuarios/eliminar/{codigo}` |
+| **Ventas** | Lista de ventas | `GET /vista/ventas` |
+| | Formulario nueva venta | `GET /vista/ventas/nuevo` |
+| | Editar venta | `GET /vista/ventas/editar/{codigo}` |
+| | Ver detalle venta | `GET /vista/ventas/ver/{codigo}` |
+| | Guardar venta | `POST /vista/ventas/guardar` |
+| **Detalle Venta** | Lista de detalles | `GET /vista/detalleVentas` |
+| | Agregar producto a venta | `GET /vista/detalleVentas/nuevo` |
+| | Editar detalle | `GET /vista/detalleVentas/editar/{codigo}` |
+| | Ver detalle | `GET /vista/detalleVentas/ver/{codigo}` |
+| | Guardar detalle | `POST /vista/detalleVentas/guardar` |
+
+### 5.3 Paleta de Colores del Logo
+
+| Color | Código | Uso |
+|-------|--------|-----|
+| Azul marino oscuro | `#062540` | Navbar, Footer |
+| Azul medio | `#1F5373` | Botones primary, headers |
+| Turquesa claro | `#73D9CF` | Botones success, acentos |
+| Beige/café claro | `#D9AF8B` | Advertencias |
+| Blanco/gris claro | `#F2F2F2` | Fondos de cards |
