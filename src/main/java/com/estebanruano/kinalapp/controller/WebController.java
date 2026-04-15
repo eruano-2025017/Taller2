@@ -6,6 +6,7 @@ import com.estebanruano.kinalapp.entity.Usuario;
 import com.estebanruano.kinalapp.entity.Venta;
 import com.estebanruano.kinalapp.entity.DetalleVenta;
 import com.estebanruano.kinalapp.service.*;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -36,9 +37,17 @@ public class WebController {
     @Autowired
     private IDetalleVentaService detalleVentaService;
 
-    // ==================== PÁGINA PRINCIPAL ====================
+    // ==================== MÉTODO HELPER PARA VERIFICAR SESIÓN ====================
+    private boolean isAuthenticated(HttpSession session) {
+        return session.getAttribute("usuarioLogueado") != null;
+    }
+
+    // ==================== PÁGINA PRINCIPAL (DASHBOARD) ====================
     @GetMapping("/")
-    public String index(Model model) {
+    public String index(Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         model.addAttribute("totalClientes", clienteService.listarTodos().size());
         model.addAttribute("totalProductos", productoService.listarTodos().size());
         model.addAttribute("totalUsuarios", usuarioService.ListarTodos().size());
@@ -48,21 +57,30 @@ public class WebController {
 
     // ==================== CLIENTES (CRUD COMPLETO) ====================
     @GetMapping("/clientes")
-    public String listarClientes(Model model) {
+    public String listarClientes(Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         model.addAttribute("clientes", clienteService.listarTodos());
         model.addAttribute("titulo", "Lista de Clientes");
         return "clientes/lista";
     }
 
     @GetMapping("/clientes/nuevo")
-    public String nuevoCliente(Model model) {
+    public String nuevoCliente(Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         model.addAttribute("cliente", new Cliente());
         model.addAttribute("accion", "Crear Cliente");
         return "clientes/formulario";
     }
 
     @GetMapping("/clientes/ver/{dpi}")
-    public String verCliente(@PathVariable String dpi, Model model) {
+    public String verCliente(@PathVariable String dpi, Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         Cliente cliente = clienteService.buscarPorDPI(dpi)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
         model.addAttribute("cliente", cliente);
@@ -70,7 +88,10 @@ public class WebController {
     }
 
     @GetMapping("/clientes/editar/{dpi}")
-    public String editarCliente(@PathVariable String dpi, Model model) {
+    public String editarCliente(@PathVariable String dpi, Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         Cliente cliente = clienteService.buscarPorDPI(dpi)
                 .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
         model.addAttribute("cliente", cliente);
@@ -84,7 +105,11 @@ public class WebController {
                                  @RequestParam String apellidoCliente,
                                  @RequestParam String direccion,
                                  @RequestParam(defaultValue = "1") int estado,
-                                 RedirectAttributes redirectAttributes) {
+                                 RedirectAttributes redirectAttributes,
+                                 HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         try {
             Cliente cliente = new Cliente();
             cliente.setDpiCliente(dpiCliente);
@@ -109,7 +134,10 @@ public class WebController {
     }
 
     @GetMapping("/clientes/eliminar/{dpi}")
-    public String eliminarCliente(@PathVariable String dpi, RedirectAttributes redirectAttributes) {
+    public String eliminarCliente(@PathVariable String dpi, RedirectAttributes redirectAttributes, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         try {
             clienteService.eliminar(dpi);
             redirectAttributes.addFlashAttribute("mensaje", "Cliente eliminado exitosamente");
@@ -123,21 +151,30 @@ public class WebController {
 
     // ==================== PRODUCTOS (CRUD COMPLETO) ====================
     @GetMapping("/productos")
-    public String listarProductos(Model model) {
+    public String listarProductos(Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         model.addAttribute("productos", productoService.listarTodos());
         model.addAttribute("titulo", "Lista de Productos");
         return "productos/lista";
     }
 
     @GetMapping("/productos/nuevo")
-    public String nuevoProducto(Model model) {
+    public String nuevoProducto(Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         model.addAttribute("producto", new Producto());
         model.addAttribute("accion", "Crear Producto");
         return "productos/formulario";
     }
 
     @GetMapping("/productos/ver/{codigo}")
-    public String verProducto(@PathVariable Long codigo, Model model) {
+    public String verProducto(@PathVariable Long codigo, Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         Producto producto = productoService.buscarPorCODIGO(codigo)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
         model.addAttribute("producto", producto);
@@ -145,7 +182,10 @@ public class WebController {
     }
 
     @GetMapping("/productos/editar/{codigo}")
-    public String editarProducto(@PathVariable Long codigo, Model model) {
+    public String editarProducto(@PathVariable Long codigo, Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         Producto producto = productoService.buscarPorCODIGO(codigo)
                 .orElseThrow(() -> new RuntimeException("Producto no encontrado"));
         model.addAttribute("producto", producto);
@@ -159,7 +199,11 @@ public class WebController {
                                   @RequestParam BigDecimal precio,
                                   @RequestParam Integer stock,
                                   @RequestParam(defaultValue = "1") Integer estado,
-                                  RedirectAttributes redirectAttributes) {
+                                  RedirectAttributes redirectAttributes,
+                                  HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         try {
             Producto producto = new Producto();
             producto.setCODIGOProducto(codigoProducto);
@@ -184,7 +228,10 @@ public class WebController {
     }
 
     @GetMapping("/productos/eliminar/{codigo}")
-    public String eliminarProducto(@PathVariable Long codigo, RedirectAttributes redirectAttributes) {
+    public String eliminarProducto(@PathVariable Long codigo, RedirectAttributes redirectAttributes, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         try {
             productoService.eliminar(codigo);
             redirectAttributes.addFlashAttribute("mensaje", "Producto eliminado exitosamente");
@@ -198,21 +245,30 @@ public class WebController {
 
     // ==================== USUARIOS (CRUD COMPLETO) ====================
     @GetMapping("/usuarios")
-    public String listarUsuarios(Model model) {
+    public String listarUsuarios(Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         model.addAttribute("usuarios", usuarioService.ListarTodos());
         model.addAttribute("titulo", "Lista de Usuarios");
         return "usuarios/lista";
     }
 
     @GetMapping("/usuarios/nuevo")
-    public String nuevoUsuario(Model model) {
+    public String nuevoUsuario(Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         model.addAttribute("usuario", new Usuario());
         model.addAttribute("accion", "Crear Usuario");
         return "usuarios/formulario";
     }
 
     @GetMapping("/usuarios/ver/{codigo}")
-    public String verUsuario(@PathVariable Long codigo, Model model) {
+    public String verUsuario(@PathVariable Long codigo, Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         Usuario usuario = usuarioService.buscarPorCODIGO(codigo)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         model.addAttribute("usuario", usuario);
@@ -220,7 +276,10 @@ public class WebController {
     }
 
     @GetMapping("/usuarios/editar/{codigo}")
-    public String editarUsuario(@PathVariable Long codigo, Model model) {
+    public String editarUsuario(@PathVariable Long codigo, Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         Usuario usuario = usuarioService.buscarPorCODIGO(codigo)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
         model.addAttribute("usuario", usuario);
@@ -235,7 +294,11 @@ public class WebController {
                                  @RequestParam String email,
                                  @RequestParam String rol,
                                  @RequestParam(defaultValue = "1") int estado,
-                                 RedirectAttributes redirectAttributes) {
+                                 RedirectAttributes redirectAttributes,
+                                 HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         try {
             Usuario usuario = new Usuario();
             usuario.setCODIGOUsuario(codigoUsuario);
@@ -261,7 +324,10 @@ public class WebController {
     }
 
     @GetMapping("/usuarios/eliminar/{codigo}")
-    public String eliminarUsuario(@PathVariable Long codigo, RedirectAttributes redirectAttributes) {
+    public String eliminarUsuario(@PathVariable Long codigo, RedirectAttributes redirectAttributes, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         try {
             usuarioService.eliminar(codigo);
             redirectAttributes.addFlashAttribute("mensaje", "Usuario eliminado exitosamente");
@@ -275,14 +341,20 @@ public class WebController {
 
     // ==================== VENTAS (CRUD COMPLETO) ====================
     @GetMapping("/ventas")
-    public String listarVentas(Model model) {
+    public String listarVentas(Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         model.addAttribute("ventas", ventaService.ListarTodos());
         model.addAttribute("titulo", "Lista de Ventas");
         return "ventas/lista";
     }
 
     @GetMapping("/ventas/nuevo")
-    public String nuevaVenta(Model model) {
+    public String nuevaVenta(Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         model.addAttribute("venta", new Venta());
         model.addAttribute("clientes", clienteService.listarTodos());
         model.addAttribute("usuarios", usuarioService.ListarTodos());
@@ -291,7 +363,10 @@ public class WebController {
     }
 
     @GetMapping("/ventas/ver/{codigo}")
-    public String verVenta(@PathVariable Long codigo, Model model) {
+    public String verVenta(@PathVariable Long codigo, Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         Venta venta = ventaService.buscarPorCODIGO(codigo)
                 .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
 
@@ -305,7 +380,10 @@ public class WebController {
     }
 
     @GetMapping("/ventas/editar/{codigo}")
-    public String editarVenta(@PathVariable Long codigo, Model model) {
+    public String editarVenta(@PathVariable Long codigo, Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         Venta venta = ventaService.buscarPorCODIGO(codigo)
                 .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
         model.addAttribute("venta", venta);
@@ -322,7 +400,11 @@ public class WebController {
                                @RequestParam String clienteDpiCliente,
                                @RequestParam Long usuarioCodigoUsuario,
                                @RequestParam(defaultValue = "1") int estado,
-                               RedirectAttributes redirectAttributes) {
+                               RedirectAttributes redirectAttributes,
+                               HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         try {
             Cliente cliente = clienteService.buscarPorDPI(clienteDpiCliente)
                     .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
@@ -353,7 +435,10 @@ public class WebController {
     }
 
     @GetMapping("/ventas/eliminar/{codigo}")
-    public String eliminarVenta(@PathVariable Long codigo, RedirectAttributes redirectAttributes) {
+    public String eliminarVenta(@PathVariable Long codigo, RedirectAttributes redirectAttributes, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         try {
             ventaService.eliminar(codigo);
             redirectAttributes.addFlashAttribute("mensaje", "Venta eliminada exitosamente");
@@ -367,14 +452,20 @@ public class WebController {
 
     // ==================== DETALLE VENTA (CRUD COMPLETO) ====================
     @GetMapping("/detalleVentas")
-    public String listarDetalleVentas(Model model) {
+    public String listarDetalleVentas(Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         model.addAttribute("detalles", detalleVentaService.ListarTodos());
         model.addAttribute("titulo", "Lista de Detalle Ventas");
         return "detalleVenta/lista";
     }
 
     @GetMapping("/detalleVentas/nuevo")
-    public String nuevoDetalleVenta(Model model) {
+    public String nuevoDetalleVenta(Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         model.addAttribute("detalleVenta", new DetalleVenta());
         model.addAttribute("ventas", ventaService.ListarTodos());
         model.addAttribute("productos", productoService.listarTodos());
@@ -383,7 +474,10 @@ public class WebController {
     }
 
     @GetMapping("/detalleVentas/ver/{codigo}")
-    public String verDetalleVenta(@PathVariable Long codigo, Model model) {
+    public String verDetalleVenta(@PathVariable Long codigo, Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         DetalleVenta detalle = detalleVentaService.buscarPorCODIGO(codigo)
                 .orElseThrow(() -> new RuntimeException("Detalle no encontrado"));
         model.addAttribute("detalle", detalle);
@@ -391,7 +485,10 @@ public class WebController {
     }
 
     @GetMapping("/detalleVentas/editar/{codigo}")
-    public String editarDetalleVenta(@PathVariable Long codigo, Model model) {
+    public String editarDetalleVenta(@PathVariable Long codigo, Model model, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         DetalleVenta detalle = detalleVentaService.buscarPorCODIGO(codigo)
                 .orElseThrow(() -> new RuntimeException("Detalle no encontrado"));
         model.addAttribute("detalleVenta", detalle);
@@ -408,7 +505,11 @@ public class WebController {
                                       @RequestParam int cantidad,
                                       @RequestParam BigDecimal precioUnitario,
                                       @RequestParam(required = false) BigDecimal subTotal,
-                                      RedirectAttributes redirectAttributes) {
+                                      RedirectAttributes redirectAttributes,
+                                      HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         try {
             Venta venta = ventaService.buscarPorCODIGO(ventaCodigoVenta)
                     .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
@@ -441,7 +542,10 @@ public class WebController {
     }
 
     @GetMapping("/detalleVentas/eliminar/{codigo}")
-    public String eliminarDetalleVenta(@PathVariable Long codigo, RedirectAttributes redirectAttributes) {
+    public String eliminarDetalleVenta(@PathVariable Long codigo, RedirectAttributes redirectAttributes, HttpSession session) {
+        if (!isAuthenticated(session)) {
+            return "redirect:/vista/login";
+        }
         try {
             detalleVentaService.eliminar(codigo);
             redirectAttributes.addFlashAttribute("mensaje", "Detalle de venta eliminado exitosamente");

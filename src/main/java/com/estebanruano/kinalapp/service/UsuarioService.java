@@ -94,6 +94,24 @@ public class UsuarioService implements IUsuarioService {
         }
 
     }
+
+    // Agregar este método para autenticar
+    public Usuario autenticar(String username, String password) {
+        Optional<Usuario> usuarioOpt = usuarioRepository.findByUsername(username);
+        if (usuarioOpt.isPresent()) {
+            Usuario usuario = usuarioOpt.get();
+            // Comparación directa de contraseñas (sin encriptar por ahora)
+            if (usuario.getPassword().equals(password) && usuario.getEstado() == 1) {
+                return usuario;
+            }
+        }
+        return null;
+    }
+
+    // Agregar método para buscar por username (necesitas agregarlo en el Repository también)
+    public Optional<Usuario> buscarPorUsername(String username) {
+        return usuarioRepository.findByUsername(username);
+    }
     @Override
     @Transactional(readOnly = true)
     public List<Usuario> listPorEstado(int estado){
