@@ -123,3 +123,85 @@ El sistema cuenta con una interfaz gráfica moderna desarrollada con **Thymeleaf
 | Turquesa claro | `#73D9CF` | Botones success, acentos |
 | Beige/café claro | `#D9AF8B` | Advertencias |
 | Blanco/gris claro | `#F2F2F2` | Fondos de cards |
+
+---
+
+### 6.1 Rutas de Autenticación
+
+| Ruta  Método  Descripción 
+---------------------------
+ `/`  GET  Redirige automáticamente al login 
+
+ `/vista/login`  GET  Muestra el formulario de inicio de sesión 
+
+ `/vista/login`  POST  Procesa las credenciales del usuario 
+
+ `/vista/register`  GET  Muestra el formulario de registro 
+
+ `/vista/register`  POST  Crea un nuevo usuario en el sistema 
+
+ `/vista/logout`  GET  Cierra la sesión del usuario 
+
+
+### 6.2 Componentes Agregados
+
+| Componente | Ubicación | Función |
+|------------|-----------|---------|
+| `AuthController.java` | `controller/` | Maneja login, register y logout |
+| `UsuarioService.autenticar()` | `service/` | Valida credenciales en la base de datos |
+| `UsuarioRepository.findByUsername()` | `repository/` | Busca usuario por nombre de usuario |
+
+### 6.4 Flujo de Funcionamiento
+
+1. El usuario entra a `http://localhost:8083/`
+2. Se dirije a `/vista/login`
+3. Ingresa su username y password
+4. El sistema valida las credenciales en la base de datos
+5. Si son correctas, inicia sesión y redirige al dashboard (`/vista/`)
+6. Si son incorrectas, muestra un mensaje de error
+7. El usuario puede cerrar sesión en `/vista/logout`
+
+### 7 Capturas De La Aplicación
+
+### 7.1 Login KinalAPP
+![img_1.png](Capturas/img_1.png)
+
+
+### 7.2 Registrar un Usuario
+![img.png](Capturas/img.png)
+
+
+### 7.3 Iniciar Seccion KinalApp
+![img_1.png](Capturas/img_1.png)
+
+
+### 7.4 Pagina Inicial KinalApp
+![img_2.png](Capturas/img_2.png)
+
+
+### 7.5 Creacion De Un Nuevo Cliente
+![img_3.png](Capturas/img_3.png)
+
+
+### 7.6 Creacion De Un Producto
+![img_4.png](Capturas/img_4.png)
+
+### 7.7 Vista de Usuarios
+![img_5.png](Capturas/img_5.png)
+
+
+### 7.8 Vista De Una Venta
+![img_6.png](Capturas/img_6.png)
+
+
+### 7.9 Vista de Detalle Venta
+![img_7.png](Capturas/img_7.png)
+
+### 7.10 Lista De Creaciones
+![img_8.png](Capturas/img_8.png)
+
+### 7.11 Base De Datos Conectado Al Frontend
+![img_9.png](Capturas/img_9.png)
+
+### 7.12 Diagrama Modelo Entidad Relacion
+![img_10.png](Capturas/img_10.png)
