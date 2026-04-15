@@ -195,7 +195,7 @@ El sistema cuenta con una interfaz gráfica moderna desarrollada con **Thymeleaf
 
 
 ### 7.9 Vista de Detalle Venta
-![img_7.png](Capturas/img_7.png)
+![img_7.png](Capturas/img_7.png)s
 
 ### 7.10 Lista De Creaciones
 ![img_8.png](Capturas/img_8.png)
