@@ -9,6 +9,7 @@ La aplicación destaca por su **integridad referencial**, asegurando que cada ve
 * **Lenguaje**: Java 21 (LTS).
 * **Framework**: Spring Boot 4.0.2.
 * **Persistencia**: Spring Data JPA con motor **MySQL**.
+* **Seguridad**: Spring Security 6.x (BCrypt password encoding, protección CSRF, roles ADMIN/USER).
 * **Gestión de Dependencias**: Maven (POM XML).
 * **Estandarización de Datos**: Implementación de tipos **Long** en todos los identificadores (ID).
 
@@ -126,40 +127,61 @@ El sistema cuenta con una interfaz gráfica moderna desarrollada con **Thymeleaf
 
 ---
 
-### 6.1 Rutas de Autenticación
+## 6. Módulo de Seguridad - Spring Security
 
-| Ruta  Método  Descripción 
----------------------------
- `/`  GET  Redirige automáticamente al login 
+El sistema implementa **Spring Security** para gestionar la autenticación y autorización de usuarios, garantizando que solo personas autorizadas puedan acceder a los recursos del sistema.
 
- `/vista/login`  GET  Muestra el formulario de inicio de sesión 
-
- `/vista/login`  POST  Procesa las credenciales del usuario 
-
- `/vista/register`  GET  Muestra el formulario de registro 
-
- `/vista/register`  POST  Crea un nuevo usuario en el sistema 
-
- `/vista/logout`  GET  Cierra la sesión del usuario 
-
-
-### 6.2 Componentes Agregados
+### 6.1 Componentes de Seguridad
 
 | Componente | Ubicación | Función |
 |------------|-----------|---------|
-| `AuthController.java` | `controller/` | Maneja login, register y logout |
-| `UsuarioService.autenticar()` | `service/` | Valida credenciales en la base de datos |
-| `UsuarioRepository.findByUsername()` | `repository/` | Busca usuario por nombre de usuario |
+| `SecurityConfig.java` | `config/` | Configuración global de seguridad (rutas protegidas, login, logout) |
+| `CustomUserDetailsService.java` | `service/` | Carga los usuarios desde la base de datos |
+| `Usuario.java` (implementa UserDetails) | `entity/` | Entidad que integra los métodos de Spring Security |
+| `PasswordEncoder` (BCrypt) | `config/` | Encripta las contraseñas antes de guardarlas en BD |
 
-### 6.4 Flujo de Funcionamiento
+### 6.2 Roles y Permisos
+
+| Rol | Clientes | Productos | Ventas | Usuarios |
+|-----|----------|-----------|--------|----------|
+| **ADMIN** | CRUD Completo | CRUD Completo | CRUD Completo | CRUD Completo |
+| **USER** | Solo Visualizar | Solo Visualizar | Solo Visualizar | No visible |
+
+### 6.3 Rutas de Autenticación
+
+| Ruta | Método | Descripción |
+|------|--------|-------------|
+| `/` | GET | Redirige automáticamente al login |
+| `/vista/login` | GET | Muestra el formulario de inicio de sesión |
+| `/vista/login` | POST | Procesa las credenciales del usuario |
+| `/vista/register` | GET | Muestra el formulario de registro |
+| `/vista/register` | POST | Crea un nuevo usuario en el sistema |
+| `/vista/logout` | POST | Cierra la sesión del usuario |
+
+### 6.4 Características de Seguridad Implementadas
+
+* **Encriptación de contraseñas**: Uso de `BCryptPasswordEncoder` para almacenar contraseñas de forma segura.
+* **Protección CSRF**: Tokens CSRF en todos los formularios POST.
+* **Autorización por roles**: Acceso restringido según el rol del usuario (ADMIN/USER).
+* **Sesiones seguras**: Configuración de cookies HTTP-only y logout automático.
+* **Redirección automática**: Usuarios no autenticados son redirigidos al login.
+
+### 6.5 Credenciales de Prueba
+
+| Tipo | Usuario | Contraseña |
+|------|---------|------------|
+| **Administrador** | `admin` | `admin` |
+| **Usuario Normal** | `user` | `12345` |
+
+### 6.6 Flujo de Funcionamiento
 
 1. El usuario entra a `http://localhost:8083/`
-2. Se dirije a `/vista/login`
+2. Es redirigido automáticamente a `/vista/login`
 3. Ingresa su username y password
-4. El sistema valida las credenciales en la base de datos
+4. Spring Security valida las credenciales en la base de datos
 5. Si son correctas, inicia sesión y redirige al dashboard (`/vista/`)
 6. Si son incorrectas, muestra un mensaje de error
-7. El usuario puede cerrar sesión en `/vista/logout`
+7. El usuario puede cerrar sesión mediante POST en `/vista/logout`
 
 ### 7 Capturas De La Aplicación
 
@@ -171,7 +193,7 @@ El sistema cuenta con una interfaz gráfica moderna desarrollada con **Thymeleaf
 ![img.png](Capturas/img.png)
 
 
-### 7.3 Iniciar Seccion KinalApp
+### 7.3 Iniciar Sesión KinalApp
 ![img_1.png](Capturas/img_1.png)
 
 
@@ -179,11 +201,11 @@ El sistema cuenta con una interfaz gráfica moderna desarrollada con **Thymeleaf
 ![img_2.png](Capturas/img_2.png)
 
 
-### 7.5 Creacion De Un Nuevo Cliente
+### 7.5 Creación De Un Nuevo Cliente
 ![img_3.png](Capturas/img_3.png)
 
 
-### 7.6 Creacion De Un Producto
+### 7.6 Creación De Un Producto
 ![img_4.png](Capturas/img_4.png)
 
 ### 7.7 Vista de Usuarios
@@ -195,7 +217,7 @@ El sistema cuenta con una interfaz gráfica moderna desarrollada con **Thymeleaf
 
 
 ### 7.9 Vista de Detalle Venta
-![img_7.png](Capturas/img_7.png)s
+![img_7.png](Capturas/img_7.png)
 
 ### 7.10 Lista De Creaciones
 ![img_8.png](Capturas/img_8.png)
