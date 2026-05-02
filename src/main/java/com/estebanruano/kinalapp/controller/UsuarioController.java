@@ -1,112 +1,67 @@
 package com.estebanruano.kinalapp.controller;
 
-import com.estebanruano.kinalapp.entity.Cliente;
 import com.estebanruano.kinalapp.entity.Usuario;
-import com.estebanruano.kinalapp.service.IUsuarioService;
+import com.estebanruano.kinalapp.service.UsuarioService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-//.
-//este es controller
+
 @RestController
 @RequestMapping("/usuarios")
 public class UsuarioController {
 
-    private final IUsuarioService usuarioService;
+    private final UsuarioService usuarioService;
 
-    public UsuarioController(IUsuarioService usuarioService){
+    public UsuarioController(UsuarioService usuarioService) {
         this.usuarioService = usuarioService;
     }
 
-    //Reponde a penticiones GET
     @GetMapping
-    //ResponseEntity nos permite controlar el codigo HTTP y el cuerpo
-    public ResponseEntity<List<Usuario>> listar(){
-        List<Usuario> usuarios = usuarioService.ListarTodos();
-        //delegamos al servicio
-        return ResponseEntity.ok(usuarios);
-        //200 OK con la lista de clientes
+    public ResponseEntity<List<Usuario>> listar() {
+        return ResponseEntity.ok(usuarioService.listarTodos());
     }
 
-    //{dpi} es una variable de ruta(valor a buscar)
     @GetMapping("/{codigoUsu}")
-    public ResponseEntity<Usuario> buscarPorCODIGO(@PathVariable Long codigoUsu){
-        //@PathVariable Toma el valor de la URL y lo asigna al dpi
-        return usuarioService.buscarPorCODIGO(codigoUsu)
-                //Si Optional tiene valor, devuelve 200 ok con el cliente
+    public ResponseEntity<Usuario> buscarPorCODIGO(@PathVariable Long codigoUsu) {
+        return usuarioService.buscarPorCodigo(codigoUsu)
                 .map(ResponseEntity::ok)
-                //Si Optinal está vacio, devuelve 404 NOT FOUND
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    //POST crear un nuevo cliente
     @PostMapping
-    public ResponseEntity<?> guardar(@RequestBody Usuario usuario){
-        //@RequestBody: Toma el JSON del cuerpo y lo convierte a un objeto de tipo Cliente
-        //<?> significa "tipo genérico" puede ser un CLiente o un String
+    public ResponseEntity<?> guardar(@RequestBody Usuario usuario) {
         try {
-            Usuario nuevoUsuario = usuarioService.guardar(usuario);
-            //Intentamos guardar el cliente pero puede lanzar una excepcion
-            // de IllegalArgumentException
-            return new ResponseEntity<>(nuevoUsuario, HttpStatus.CREATED);
-            //201 CREATED(mucho más específico que el 2200 para la creación de un cliente)
-        }catch(IllegalArgumentException e){
-            //Si hay error de validacion
+            return new ResponseEntity<>(usuarioService.guardar(usuario), HttpStatus.CREATED);
+        } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
-            //400 BAD REQUEST con el mensaje de error
         }
     }
 
-    //DELETE elimina un cliente
     @DeleteMapping("/{codigoUsu}")
-    public ResponseEntity<Void> eliminar(@PathVariable Long codigoUsu){
-        //ResponseEntity<Void>: No devuelve cuerpo en la respuesta
-        try {
-            if (!usuarioService.existePorCODIGO(codigoUsu)){
-                return ResponseEntity.notFound().build();
-                //404 si no existe
-            }
-            usuarioService.eliminar(codigoUsu);
-            return ResponseEntity.noContent().build();
-            //204 NO CONTENT (se ejecutó correctamente y no devuelve cuerpo)
-        }catch (RuntimeException e){
+    public ResponseEntity<Void> eliminar(@PathVariable Long codigoUsu) {
+        if (!usuarioService.existePorCodigo(codigoUsu)) {
             return ResponseEntity.notFound().build();
-            //404 NOT FOUND
         }
-
+        usuarioService.eliminar(codigoUsu);
+        return ResponseEntity.noContent().build();
     }
 
-    //Actualizar cliente a través de codigo
     @PutMapping("/{codigoUsu}")
-    public ResponseEntity<?> actualizar(@PathVariable Long codigoUsu, @RequestBody Usuario usuario){
-        try{
-            if(!usuarioService.existePorCODIGO(codigoUsu)){
-                //Verificar si existe antes de poder actualizar
-                //404 NOT FOUND
-                return  ResponseEntity.notFound().build();
-            }
-            //Actualizar el cliente pero esto puede lanzar una excepcion
-            Usuario usuarioActualizado = usuarioService.actualizar(codigoUsu, usuario);
-            return ResponseEntity.ok(usuarioActualizado);
-            //200 ok con el cliente ya actualizado
-        }catch(IllegalArgumentException e){
-            //Error cuando los dados son incorrectos
-            return ResponseEntity.badRequest().body(e.getMessage());
-        }catch (RuntimeException e){
-            //Posiblemente cualquier otro error como: cliente no encontrado, etc.
-            //404 NOT FOUND
+    public ResponseEntity<?> actualizar(@PathVariable Long codigoUsu, @RequestBody Usuario usuario) {
+        if (!usuarioService.existePorCodigo(codigoUsu)) {
             return ResponseEntity.notFound().build();
         }
-
+        try {
+            return ResponseEntity.ok(usuarioService.actualizar(codigoUsu, usuario));
+        } catch (IllegalArgumentException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
+        }
     }
 
     @GetMapping("/estado/{estado}")
-    //ResposeEntity nos permite controlar el codigo HTTP y el cuerpo
-    public ResponseEntity<List<Usuario>> listPorEstado(@PathVariable int estado){
-        List<Usuario> usuarios = usuarioService.listPorEstado(estado);
+    public ResponseEntity<List<Usuario>> listPorEstado(@PathVariable int estado) {
         return ResponseEntity.ok(usuarioService.listPorEstado(estado));
     }
-
 }
