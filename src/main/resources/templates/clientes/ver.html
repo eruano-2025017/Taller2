@@ -1,6 +1,6 @@
-.
 <!DOCTYPE html>
-<html xmlns:th="http://www.thymeleaf.org">
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
     <title>Ver Cliente - KinalApp</title>
@@ -30,55 +30,18 @@
     <div class="row justify-content-center">
         <div class="col-md-6">
             <div class="card">
-                <div class="card-header bg-info text-white">
-                    <h4><i class="bi bi-eye"></i> Detalles del Cliente</h4>
-                </div>
+                <div class="card-header bg-info text-white"><h4><i class="bi bi-eye"></i> Detalles del Cliente</h4></div>
                 <div class="card-body">
-                    <div class="text-center mb-4">
-                        <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex p-4">
-                            <i class="bi bi-person-circle fs-1" style="color: var(--primary);"></i>
-                        </div>
-                    </div>
-                    <div class="info-item mb-3 p-3 rounded" style="background: var(--light);">
-                        <div class="d-flex justify-content-between">
-                            <span class="fw-bold"><i class="bi bi-card-text"></i> DPI:</span>
-                            <span th:text="${cliente.dpiCliente}">-</span>
-                        </div>
-                    </div>
-                    <div class="info-item mb-3 p-3 rounded" style="background: var(--light);">
-                        <div class="d-flex justify-content-between">
-                            <span class="fw-bold"><i class="bi bi-person"></i> Nombre:</span>
-                            <span th:text="${cliente.nombreCliente}">-</span>
-                        </div>
-                    </div>
-                    <div class="info-item mb-3 p-3 rounded" style="background: var(--light);">
-                        <div class="d-flex justify-content-between">
-                            <span class="fw-bold"><i class="bi bi-person"></i> Apellido:</span>
-                            <span th:text="${cliente.apellidoCliente}">-</span>
-                        </div>
-                    </div>
-                    <div class="info-item mb-3 p-3 rounded" style="background: var(--light);">
-                        <div class="d-flex justify-content-between">
-                            <span class="fw-bold"><i class="bi bi-geo-alt"></i> Dirección:</span>
-                            <span th:text="${cliente.direccion}">-</span>
-                        </div>
-                    </div>
-                    <div class="info-item mb-3 p-3 rounded" style="background: var(--light);">
-                        <div class="d-flex justify-content-between">
-                            <span class="fw-bold"><i class="bi bi-toggle-on"></i> Estado:</span>
-                            <span class="badge" th:class="${cliente.estado == 1} ? 'badge-success' : 'badge-danger'"
-                                  th:text="${cliente.estado == 1} ? 'ACTIVO' : 'INACTIVO'">
-                                </span>
-                        </div>
-                    </div>
+                    <div class="text-center mb-4"><div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex p-4"><i class="bi bi-person-circle fs-1" style="color: var(--primary);"></i></div></div>
+                    <div class="info-item mb-3 p-3 rounded" style="background: var(--light);"><div class="d-flex justify-content-between"><span class="fw-bold"><i class="bi bi-card-text"></i> DPI:</span><span th:text="${cliente.dpiCliente}">-</span></div></div>
+                    <div class="info-item mb-3 p-3 rounded" style="background: var(--light);"><div class="d-flex justify-content-between"><span class="fw-bold"><i class="bi bi-person"></i> Nombre:</span><span th:text="${cliente.nombreCliente}">-</span></div></div>
+                    <div class="info-item mb-3 p-3 rounded" style="background: var(--light);"><div class="d-flex justify-content-between"><span class="fw-bold"><i class="bi bi-person"></i> Apellido:</span><span th:text="${cliente.apellidoCliente}">-</span></div></div>
+                    <div class="info-item mb-3 p-3 rounded" style="background: var(--light);"><div class="d-flex justify-content-between"><span class="fw-bold"><i class="bi bi-geo-alt"></i> Dirección:</span><span th:text="${cliente.direccion}">-</span></div></div>
+                    <div class="info-item mb-3 p-3 rounded" style="background: var(--light);"><div class="d-flex justify-content-between"><span class="fw-bold"><i class="bi bi-toggle-on"></i> Estado:</span><span class="badge" th:class="${cliente.estado == 1} ? 'badge-success' : 'badge-danger'" th:text="${cliente.estado == 1} ? 'ACTIVO' : 'INACTIVO'"></span></div></div>
                     <div class="d-flex gap-3 mt-4">
-                        <a th:href="@{/vista/clientes/editar/{dpi}(dpi=${cliente.dpiCliente})}"
-                           class="btn btn-primary flex-grow-1">
-                            <i class="bi bi-pencil"></i> Editar
-                        </a>
-                        <a href="/vista/clientes" class="btn btn-secondary flex-grow-1">
-                            <i class="bi bi-arrow-left"></i> Volver
-                        </a>
+                        <a sec:authorize="hasRole('ADMIN')" th:href="@{/vista/clientes/editar/{dpi}(dpi=${cliente.dpiCliente})}" class="btn btn-primary flex-grow-1"><i class="bi bi-pencil"></i> Editar</a>
+                        <a sec:authorize="hasRole('ADMIN')" th:href="@{/vista/clientes/eliminar/{dpi}(dpi=${cliente.dpiCliente})}" class="btn btn-danger flex-grow-1" onclick="return confirm('¿Estás seguro de eliminar este cliente?')"><i class="bi bi-trash"></i> Eliminar</a>
+                        <a href="/vista/clientes" class="btn btn-secondary flex-grow-1"><i class="bi bi-arrow-left"></i> Volver</a>
                     </div>
                 </div>
             </div>
@@ -86,18 +49,7 @@
     </div>
 </div>
 
-<footer class="footer">
-    <p>&copy; 2024 KinalApp - Sistema de Gestión Integral PERRO</p>
-    <small>Hecho con <i class="bi bi-heart-fill text-danger"></i> para tu negocio</small>
-</footer>
-
+<footer class="footer"><p>&copy; 2026 KinalApp - Sistema de Gestión Integral</p></footer>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-<script>
-    window.addEventListener('scroll', function() {
-        const navbar = document.getElementById('navbar');
-        if (window.scrollY > 50) navbar.classList.add('scrolled');
-        else navbar.classList.remove('scrolled');
-    });
-</script>
 </body>
 </html>
