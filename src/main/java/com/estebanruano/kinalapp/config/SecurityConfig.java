@@ -25,21 +25,27 @@ public class SecurityConfig {
                         .requestMatchers("/css/**", "/js/**", "/images/**", "/webjars/**").permitAll()
                         .requestMatchers("/vista/login", "/vista/register").permitAll()
 
-                        // Solo ADMIN puede crear, editar, eliminar
+                        // CREAR – para ADMIN y USER (excepto usuarios, que queda solo ADMIN)
                         .requestMatchers(
                                 "/vista/clientes/nuevo",
+                                "/vista/productos/nuevo",
+                                "/vista/ventas/nuevo",
+                                "/vista/detalleVentas/nuevo"
+                        ).hasAnyRole("ADMIN", "USER")
+
+                        // Solo ADMIN puede crear usuarios
+                        .requestMatchers("/vista/usuarios/nuevo").hasRole("ADMIN")
+
+                        // Solo ADMIN puede editar o eliminar
+                        .requestMatchers(
                                 "/vista/clientes/editar/**",
                                 "/vista/clientes/eliminar/**",
-                                "/vista/productos/nuevo",
                                 "/vista/productos/editar/**",
                                 "/vista/productos/eliminar/**",
-                                "/vista/usuarios/nuevo",
                                 "/vista/usuarios/editar/**",
                                 "/vista/usuarios/eliminar/**",
-                                "/vista/ventas/nuevo",
                                 "/vista/ventas/editar/**",
                                 "/vista/ventas/eliminar/**",
-                                "/vista/detalleVentas/nuevo",
                                 "/vista/detalleVentas/editar/**",
                                 "/vista/detalleVentas/eliminar/**"
                         ).hasRole("ADMIN")
