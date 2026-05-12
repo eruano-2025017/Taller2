@@ -7,6 +7,9 @@ import com.estebanruano.kinalapp.entity.Usuario;
 import com.estebanruano.kinalapp.entity.Venta;
 import com.estebanruano.kinalapp.service.*;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.AccessDeniedException;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -35,6 +38,18 @@ public class WebController {
 
     @Autowired
     private IDetalleVentaService detalleVentaService;
+
+    // Metodo que no deja actualizar a USERs
+    private void verificarPermisoActualizacion(boolean esActualizacion) {
+        if (esActualizacion) {
+            Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+            boolean isAdmin = auth.getAuthorities().stream()
+                    .anyMatch(a -> a.getAuthority().equals("ROLE_ADMIN"));
+            if (!isAdmin) {
+                throw new AccessDeniedException("No tiene permisos para actualizar registros.");
+            }
+        }
+    }
 
     @GetMapping("/")
     public String index(Model model) {
@@ -85,6 +100,9 @@ public class WebController {
                                  @RequestParam(defaultValue = "1") int estado,
                                  RedirectAttributes redirectAttributes) {
         try {
+            boolean existe = dpiCliente != null && clienteService.existePorDPI(dpiCliente);
+            verificarPermisoActualizacion(existe);
+
             Cliente cliente = new Cliente();
             cliente.setDpiCliente(dpiCliente);
             cliente.setNombreCliente(nombreCliente);
@@ -92,7 +110,7 @@ public class WebController {
             cliente.setDireccion(direccion);
             cliente.setEstado(estado);
 
-            if (dpiCliente != null && clienteService.existePorDPI(dpiCliente)) {
+            if (existe) {
                 clienteService.actualizar(dpiCliente, cliente);
                 redirectAttributes.addFlashAttribute("mensaje", "Cliente actualizado exitosamente");
             } else {
@@ -100,6 +118,10 @@ public class WebController {
                 redirectAttributes.addFlashAttribute("mensaje", "Cliente guardado exitosamente");
             }
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
+        } catch (AccessDeniedException e) {
+            redirectAttributes.addFlashAttribute("mensaje", e.getMessage());
+            redirectAttributes.addFlashAttribute("tipoMensaje", "danger");
+            return "redirect:/vista/clientes";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensaje", "Error: " + e.getMessage());
             redirectAttributes.addFlashAttribute("tipoMensaje", "danger");
@@ -160,6 +182,9 @@ public class WebController {
                                   @RequestParam(defaultValue = "1") Integer estado,
                                   RedirectAttributes redirectAttributes) {
         try {
+            boolean existe = codigoProducto != null && productoService.existePorCODIGO(codigoProducto);
+            verificarPermisoActualizacion(existe);
+
             Producto producto = new Producto();
             producto.setCODIGOProducto(codigoProducto);
             producto.setNombreProducto(nombreProducto);
@@ -167,7 +192,7 @@ public class WebController {
             producto.setStock(stock);
             producto.setEstado(estado);
 
-            if (codigoProducto != null && productoService.existePorCODIGO(codigoProducto)) {
+            if (existe) {
                 productoService.actualizar(codigoProducto, producto);
                 redirectAttributes.addFlashAttribute("mensaje", "Producto actualizado exitosamente");
             } else {
@@ -175,6 +200,10 @@ public class WebController {
                 redirectAttributes.addFlashAttribute("mensaje", "Producto guardado exitosamente");
             }
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
+        } catch (AccessDeniedException e) {
+            redirectAttributes.addFlashAttribute("mensaje", e.getMessage());
+            redirectAttributes.addFlashAttribute("tipoMensaje", "danger");
+            return "redirect:/vista/productos";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensaje", "Error: " + e.getMessage());
             redirectAttributes.addFlashAttribute("tipoMensaje", "danger");
@@ -236,6 +265,9 @@ public class WebController {
                                  @RequestParam(defaultValue = "1") int estado,
                                  RedirectAttributes redirectAttributes) {
         try {
+            boolean existe = codigoUsuario != null && codigoUsuario > 0 && usuarioService.existePorCodigo(codigoUsuario);
+            verificarPermisoActualizacion(existe);
+
             Usuario usuario = new Usuario();
             usuario.setCODIGOUsuario(codigoUsuario);
             usuario.setUsername(username);
@@ -244,7 +276,7 @@ public class WebController {
             usuario.setRol(rol);
             usuario.setEstado(estado);
 
-            if (codigoUsuario != null && codigoUsuario > 0 && usuarioService.existePorCodigo(codigoUsuario)) {
+            if (existe) {
                 usuarioService.actualizar(codigoUsuario, usuario);
                 redirectAttributes.addFlashAttribute("mensaje", "Usuario actualizado exitosamente");
             } else {
@@ -252,6 +284,10 @@ public class WebController {
                 redirectAttributes.addFlashAttribute("mensaje", "Usuario guardado exitosamente");
             }
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
+        } catch (AccessDeniedException e) {
+            redirectAttributes.addFlashAttribute("mensaje", e.getMessage());
+            redirectAttributes.addFlashAttribute("tipoMensaje", "danger");
+            return "redirect:/vista/usuarios";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensaje", "Error: " + e.getMessage());
             redirectAttributes.addFlashAttribute("tipoMensaje", "danger");
@@ -323,6 +359,9 @@ public class WebController {
                                @RequestParam(defaultValue = "1") int estado,
                                RedirectAttributes redirectAttributes) {
         try {
+            boolean existe = codigoVenta != null && codigoVenta > 0 && ventaService.existePorCODIGO(codigoVenta);
+            verificarPermisoActualizacion(existe);
+
             Cliente cliente = clienteService.buscarPorDPI(clienteDpiCliente)
                     .orElseThrow(() -> new RuntimeException("Cliente no encontrado"));
             Usuario usuario = usuarioService.buscarPorCodigo(usuarioCodigoUsuario)
@@ -336,7 +375,7 @@ public class WebController {
             venta.setUsuario(usuario);
             venta.setEstado(estado);
 
-            if (codigoVenta != null && codigoVenta > 0 && ventaService.existePorCODIGO(codigoVenta)) {
+            if (existe) {
                 ventaService.actualizar(codigoVenta, venta);
                 redirectAttributes.addFlashAttribute("mensaje", "Venta actualizada exitosamente");
             } else {
@@ -344,6 +383,10 @@ public class WebController {
                 redirectAttributes.addFlashAttribute("mensaje", "Venta guardada exitosamente");
             }
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
+        } catch (AccessDeniedException e) {
+            redirectAttributes.addFlashAttribute("mensaje", e.getMessage());
+            redirectAttributes.addFlashAttribute("tipoMensaje", "danger");
+            return "redirect:/vista/ventas";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensaje", "Error: " + e.getMessage());
             redirectAttributes.addFlashAttribute("tipoMensaje", "danger");
@@ -409,6 +452,9 @@ public class WebController {
                                       @RequestParam(required = false) BigDecimal subTotal,
                                       RedirectAttributes redirectAttributes) {
         try {
+            boolean existe = codigoDetalleVenta != null && codigoDetalleVenta > 0 && detalleVentaService.existePorCODIGO(codigoDetalleVenta);
+            verificarPermisoActualizacion(existe);
+
             Venta venta = ventaService.buscarPorCODIGO(ventaCodigoVenta)
                     .orElseThrow(() -> new RuntimeException("Venta no encontrada"));
             Producto producto = productoService.buscarPorCODIGO(productoCodigoProducto)
@@ -424,7 +470,7 @@ public class WebController {
             detalleVenta.setPrecioUnitario(precioUnitario);
             detalleVenta.setSubTotal(subtotal);
 
-            if (codigoDetalleVenta != null && codigoDetalleVenta > 0 && detalleVentaService.existePorCODIGO(codigoDetalleVenta)) {
+            if (existe) {
                 detalleVentaService.actualizar(codigoDetalleVenta, detalleVenta);
                 redirectAttributes.addFlashAttribute("mensaje", "Detalle actualizado exitosamente");
             } else {
@@ -432,6 +478,10 @@ public class WebController {
                 redirectAttributes.addFlashAttribute("mensaje", "Producto agregado a la venta exitosamente");
             }
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
+        } catch (AccessDeniedException e) {
+            redirectAttributes.addFlashAttribute("mensaje", e.getMessage());
+            redirectAttributes.addFlashAttribute("tipoMensaje", "danger");
+            return "redirect:/vista/detalleVentas";
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensaje", "Error: " + e.getMessage());
             redirectAttributes.addFlashAttribute("tipoMensaje", "danger");
