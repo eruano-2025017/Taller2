@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="es" xmlns:th="http://www.thymeleaf.org"
+      th:fragment="layout(content)">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>KinalApp</title>
+
+    <!-- Bootstrap -->
+    <link rel="stylesheet" th:href="@{/css/bootstrap.min.css}">
+    <script th:src="@{/js/bootstrap.bundle.min.js}"></script>
+
+</head>
+
+<body>
+
+<!-- Navbar Global -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary shadow">
+    <div class="container">
+
+        <!-- Logo + Nombre -->
+        <a class="navbar-brand fw-bold text-white" href="/vista/">
+            KinalApp
+        </a>
+
+        <!-- Botón responsive -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Menú -->
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto">
+
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/alumnos/lista}">Alumnos</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/profesores/lista}">Profesores</a>
+                </li>
+
+                <li class="nav-item">
+                    <a class="nav-link" th:href="@{/administrativos/lista}">Administrativos</a>
+                </li>
+
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<!-- Contenido dinámico -->
+<main class="container mt-4" th:replace="${content}">
+</main>
+
+</body>
+</html>
+.
