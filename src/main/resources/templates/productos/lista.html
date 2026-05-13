@@ -40,7 +40,6 @@
     <div class="card">
         <div class="card-header bg-success d-flex justify-content-between align-items-center">
             <h3><i class="bi bi-box-seam-fill"></i> Gestión de Productos</h3>
-            <!-- Botón visible para todos los autenticados -->
             <a href="/vista/productos/nuevo" class="btn btn-light pulse">
                 <i class="bi bi-plus-circle"></i> Nuevo Producto
             </a>
@@ -64,15 +63,15 @@
                         <td data-label="Nombre" th:text="${producto.nombreProducto}">-</td>
                         <td data-label="Precio" th:text="'Q' + ${producto.precio}">-</td>
                         <td data-label="Stock">
-                                    <span th:if="${producto.stock <= 5}" class="badge badge-warning">
-                                        <i class="bi bi-exclamation-triangle"></i> <span th:text="${producto.stock}">-</span>
-                                    </span>
+                            <span th:if="${producto.stock <= 5}" class="badge badge-warning">
+                                <i class="bi bi-exclamation-triangle"></i> <span th:text="${producto.stock}">-</span>
+                            </span>
                             <span th:unless="${producto.stock <= 5}" th:text="${producto.stock}">-</span>
                         </td>
                         <td data-label="Estado">
-                                    <span class="badge" th:class="${producto.estado == 1} ? 'badge-success' : 'badge-danger'"
-                                          th:text="${producto.estado == 1} ? 'ACTIVO' : 'INACTIVO'">
-                                    </span>
+                            <span class="badge" th:class="${producto.estado == 1} ? 'badge-success' : 'badge-danger'"
+                                  th:text="${producto.estado == 1} ? 'ACTIVO' : 'INACTIVO'">
+                            </span>
                         </td>
                         <td data-label="Acciones">
                             <div class="btn-group">
@@ -86,7 +85,7 @@
                                 </a>
                                 <a sec:authorize="hasRole('ADMIN')" th:href="@{/vista/productos/eliminar/{codigo}(codigo=${producto.CODIGOProducto})}"
                                    class="btn btn-danger btn-sm" title="Eliminar"
-                                   onclick="return confirm('¿Estás seguro de eliminar este producto?')">
+                                   onclick="return confirm('ATENCIÓN: El producto no se eliminará físicamente de la base de datos porque puede estar asociado a ventas existentes. En su lugar, se desactivará (estado INACTIVO).\n\n¿Desea continuar?')">
                                     <i class="bi bi-trash"></i>
                                 </a>
                             </div>
@@ -111,7 +110,8 @@
 </div>
 
 <footer class="footer">
-    <p>&copy; 2026 KinalApp - Sistema de Gestion Ventas</p>
+    <p>&copy; 2024 KinalApp - Sistema de Gestión Integral PERRO</p>
+    <small>Hecho con <i class="bi bi-heart-fill text-danger"></i> para tu negocio</small>
 </footer>
 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>

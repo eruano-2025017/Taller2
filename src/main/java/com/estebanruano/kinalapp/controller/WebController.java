@@ -39,7 +39,6 @@ public class WebController {
     @Autowired
     private IDetalleVentaService detalleVentaService;
 
-    // Metodo que no deja actualizar a USERs
     private void verificarPermisoActualizacion(boolean esActualizacion) {
         if (esActualizacion) {
             Authentication auth = SecurityContextHolder.getContext().getAuthentication();
@@ -133,7 +132,8 @@ public class WebController {
     public String eliminarCliente(@PathVariable String dpi, RedirectAttributes redirectAttributes) {
         try {
             clienteService.eliminar(dpi);
-            redirectAttributes.addFlashAttribute("mensaje", "Cliente eliminado exitosamente");
+            redirectAttributes.addFlashAttribute("mensaje",
+                    "Cliente desactivado correctamente. No se elimina físicamente porque puede estar asociado a ventas existentes.");
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensaje", "Error: " + e.getMessage());
@@ -215,7 +215,8 @@ public class WebController {
     public String eliminarProducto(@PathVariable Long codigo, RedirectAttributes redirectAttributes) {
         try {
             productoService.eliminar(codigo);
-            redirectAttributes.addFlashAttribute("mensaje", "Producto eliminado exitosamente");
+            redirectAttributes.addFlashAttribute("mensaje",
+                    "Producto desactivado correctamente. No se elimina físicamente porque puede estar asociado a ventas existentes.");
             redirectAttributes.addFlashAttribute("tipoMensaje", "success");
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("mensaje", "Error: " + e.getMessage());
@@ -311,7 +312,15 @@ public class WebController {
     // ==================== VENTAS ====================
     @GetMapping("/ventas")
     public String listarVentas(Model model) {
-        model.addAttribute("ventas", ventaService.ListarTodos());
+        List<Venta> ventas = ventaService.ListarTodos();
+        // Limpiar relaciones rotas para evitar errores en la vista
+        for (Venta v : ventas) {
+            try { if (v.getCliente() != null) v.getCliente().getNombreCliente(); }
+            catch (Exception e) { v.setCliente(null); }
+            try { if (v.getUsuario() != null) v.getUsuario().getUsername(); }
+            catch (Exception e) { v.setUsuario(null); }
+        }
+        model.addAttribute("ventas", ventas);
         model.addAttribute("titulo", "Lista de Ventas");
         return "ventas/lista";
     }
