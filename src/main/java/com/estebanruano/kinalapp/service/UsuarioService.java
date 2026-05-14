@@ -2,6 +2,7 @@ package com.estebanruano.kinalapp.service;
 
 import com.estebanruano.kinalapp.entity.Usuario;
 import com.estebanruano.kinalapp.repository.UsuarioRepository;
+import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -19,6 +20,37 @@ public class UsuarioService {
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @PostConstruct
+    public void initDefaultUsers() {
+        // Crear usuario ADMIN si no existe
+        if (usuarioRepository.findByUsername("admin").isEmpty()) {
+            Usuario admin = new Usuario();
+            admin.setUsername("admin");
+            admin.setPassword(passwordEncoder.encode("admin"));
+            admin.setEmail("admin@kinalapp.com");
+            admin.setRol("ADMIN");
+            admin.setEstado(1);
+            usuarioRepository.save(admin);
+            System.out.println("Usuario ADMIN creado por defecto: admin / admin");
+        } else {
+            System.out.println("ℹUsuario ADMIN ya existe en la BD");
+        }
+
+        // Crear usuario USER si no existe
+        if (usuarioRepository.findByUsername("user").isEmpty()) {
+            Usuario user = new Usuario();
+            user.setUsername("user");
+            user.setPassword(passwordEncoder.encode("12345"));
+            user.setEmail("user@kinalapp.com");
+            user.setRol("USER");
+            user.setEstado(1);
+            usuarioRepository.save(user);
+            System.out.println("Usuario USER creado por defecto: user / 12345");
+        } else {
+            System.out.println("ℹUsuario USER ya existe en la BD");
+        }
+    }
 
     @Transactional(readOnly = true)
     public List<Usuario> listarTodos() {
